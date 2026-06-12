@@ -1,0 +1,18 @@
+{
+  "name": "aws-dva-c02-reader",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Giáo trình ôn thi AWS Certified Developer Associate (DVA-C02) — trình đọc kiểu máy đọc sách",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "highlight.js": "^11.9.0",
+    "marked": "^12.0.2",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
