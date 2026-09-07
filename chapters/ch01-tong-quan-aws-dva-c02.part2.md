@@ -101,7 +101,7 @@ aws sns create-topic --name billing-alarm-topic --region us-east-1
 aws sns subscribe \
   --topic-arn arn:aws:sns:us-east-1:123456789012:billing-alarm-topic \
   --protocol email \
-  --notification-endpoint duntt232@gmail.com \
+  --notification-endpoint your-email@example.com \
   --region us-east-1
 ```
 
@@ -161,7 +161,7 @@ cat > /tmp/notifications.json <<'EOF'
       "ThresholdType": "PERCENTAGE"
     },
     "Subscribers": [
-      { "SubscriptionType": "EMAIL", "Address": "duntt232@gmail.com" }
+      { "SubscriptionType": "EMAIL", "Address": "your-email@example.com" }
     ]
   },
   {
@@ -172,7 +172,7 @@ cat > /tmp/notifications.json <<'EOF'
       "ThresholdType": "PERCENTAGE"
     },
     "Subscribers": [
-      { "SubscriptionType": "EMAIL", "Address": "duntt232@gmail.com" }
+      { "SubscriptionType": "EMAIL", "Address": "your-email@example.com" }
     ]
   }
 ]

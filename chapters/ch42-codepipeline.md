@@ -487,7 +487,7 @@ Lưu ý `source.type` và `artifacts.type` đều là `CODEPIPELINE` — nghĩa 
 ```bash
 export TOPIC_ARN=$(aws sns create-topic --name cp-approval --query TopicArn --output text)
 aws sns subscribe --topic-arn $TOPIC_ARN --protocol email \
-  --notification-endpoint duntt232@gmail.com
+  --notification-endpoint your-email@example.com
 # Vào email bấm Confirm subscription trước khi chạy pipeline
 ```
 

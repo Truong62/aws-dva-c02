@@ -269,7 +269,7 @@ Metric `EstimatedCharges` (namespace `AWS/Billing`) **chỉ tồn tại ở `us-
 aws sns create-topic --name billing-alarm --region us-east-1
 aws sns subscribe --region us-east-1 \
   --topic-arn arn:aws:sns:us-east-1:123456789012:billing-alarm \
-  --protocol email --notification-endpoint duntt232@gmail.com
+  --protocol email --notification-endpoint your-email@example.com
 # → mở email bấm Confirm subscription
 
 # 2) Alarm khi ước tính chi phí vượt 5 USD
@@ -304,7 +304,7 @@ aws budgets create-budget --account-id 123456789012 \
       "Threshold": 80,
       "ThresholdType": "PERCENTAGE"
     },
-    "Subscribers": [{"SubscriptionType": "EMAIL", "Address": "duntt232@gmail.com"}]
+    "Subscribers": [{"SubscriptionType": "EMAIL", "Address": "your-email@example.com"}]
   }]'
 ```
 

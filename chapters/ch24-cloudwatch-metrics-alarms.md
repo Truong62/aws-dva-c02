@@ -374,7 +374,7 @@ Lưu ý: state đặt thủ công sẽ bị ghi đè ở lần đánh giá metri
 
 ```bash
 export AWS_DEFAULT_REGION=ap-southeast-1
-EMAIL="duntt232@gmail.com"   # email nhận cảnh báo
+EMAIL="your-email@example.com"   # email nhận cảnh báo
 ```
 
 CloudWatch tính phí theo số custom metric/tháng, số API call `PutMetricData`, số alarm. Lab này tốn vài cent nếu chạy trong vài giờ — nhớ làm bước Dọn dẹp.
