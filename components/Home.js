@@ -41,7 +41,8 @@ export default function Home({ meta, totalWords }) {
         ) : (
           <Link className="btn-primary" href="/chuong/1">▸ Bắt đầu đọc</Link>
         )}
-        <Link className="btn-ghost" href="/chuong/49">Vào bộ đề mô phỏng →</Link>
+        <Link className="btn-ghost" href="/quiz">Luyện đề 510 câu →</Link>
+        <Link className="btn-ghost" href="/chuong/49">Bộ đề mô phỏng →</Link>
       </div>
 
       <div className="shelf">

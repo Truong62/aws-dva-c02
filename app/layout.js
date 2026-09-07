@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: boot }} />
         <link
           rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/atelier-cave.min.css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/gruvbox-dark-medium.min.css"
         />
       </head>
       <body>{children}</body>

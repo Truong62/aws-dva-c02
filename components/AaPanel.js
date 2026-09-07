@@ -14,12 +14,18 @@ const THEMES = [
   { key: 'paper', label: 'Giấy' },
   { key: 'sepia', label: 'Sepia' },
   { key: 'night', label: 'Đêm' },
+  { key: 'mono', label: 'Trắng đen' },
 ];
 
-export default function AaPanel({ prefs, apply, outline, onJump }) {
+export default function AaPanel({ prefs, apply, outline, onJump, onClose }) {
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
   return (
     <div className="aa-pop" role="dialog" aria-label="Tuỳ chỉnh hiển thị">
+      <div className="aa-grip" onClick={onClose} />
+      <div className="aa-titlebar">
+        <span>Hiển thị</span>
+        <button className="aa-close" onClick={onClose} aria-label="Đóng">✕</button>
+      </div>
       <div className="aa-row">
         <div className="aa-label">Nền trang</div>
         <div className="aa-themes">

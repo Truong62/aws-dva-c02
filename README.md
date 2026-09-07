@@ -38,9 +38,23 @@ Thư mục `out/` là HTML/CSS/JS tĩnh — markdown được render sẵn lúc 
 
 ## Tính năng trình đọc (e-reader)
 
-- 3 nền giấy: **Giấy / Sepia / Đêm** (giữ tông cam), lưu theo thiết bị, không nhấp nháy khi tải.
+- 4 nền giấy: **Giấy / Sepia / Đêm / Trắng đen**, lưu theo thiết bị, không nhấp nháy khi tải.
 - Bảng **Aa**: chỉnh cỡ chữ, giãn dòng, phông (Sách/Báo/Sans), khổ trang (Hẹp/Vừa/Rộng), canh trái/đều.
 - Drop-cap đầu chương, typography tối ưu đọc lâu.
 - Sidebar 10 phần / 50 chương + tìm kiếm (`/`), đánh dấu **đã học xong**, thanh tiến độ toàn khoá.
 - "Đọc tiếp" nhớ chương đang đọc; thanh tiến độ cuộn; phím `←` `→` chuyển chương.
 - Đáp án quiz **tự gập**; mục lục trong chương; nút in/xuất PDF từng chương.
+
+## Bộ đề luyện tập — `/quiz`
+
+510 câu trắc nghiệm có đáp án và giải thích tiếng Việt: 16 quiz theo chủ đề (120 câu) và 6 đề mô phỏng full 65 câu (390 câu). Chạy hoàn toàn trong trình duyệt, không cần đăng nhập.
+
+- Vào đề theo 2 bước trượt ngang: **chọn đề → vào làm bài**. Bấm lại vào bước trên thanh để quay lui.
+- Chế độ suy ra từ đề, không phải chọn tay: 16 quiz theo chủ đề chạy **Luyện tập** (hiện đáp án ngay), 6 đề mô phỏng chạy **Thi thử** (chấm khi nộp, ngưỡng đạt 72%, mặc định đếm ngược 130 phút như kỳ thi thật).
+- Mỗi đề là trọn bộ câu của phần đó, không phải nhập số câu. Tuỳ chọn: trộn câu hỏi, trộn đáp án, đếm ngược.
+- Code trong đề bài và giải thích được syntax-highlight (highlight.js, tự đoán JSON/YAML/bash) trên nền tối bảng màu Dracula — chỉ trong `/quiz`, trang giáo trình vẫn dùng gruvbox.
+- Đánh dấu câu, bảng số câu, tự lưu tiến độ (thoát ra vào lại vẫn làm tiếp được), làm lại riêng các câu sai.
+- Lịch sử và điểm cao nhất từng phần lưu trong `localStorage`.
+- Phím tắt khi làm bài: `←` `→` chuyển câu, `1`–`9` chọn đáp án.
+
+Dữ liệu câu hỏi nằm ở `public/quiz-questions.json`; logic thuần ở `lib/quiz.mjs`, kiểm tra bằng `npm run check`.

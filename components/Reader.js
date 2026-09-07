@@ -64,8 +64,45 @@ export default function Reader({ chapter, html, outline }) {
       h3.replaceWith(details);
     });
 
-    root.querySelectorAll('pre code').forEach((b) => {
-      try { hljs.highlightElement(b); } catch {}
+    const LANG_LABEL = {
+      bash: 'Shell', sh: 'Shell', shell: 'Shell', zsh: 'Shell',
+      js: 'JavaScript', javascript: 'JavaScript', ts: 'TypeScript', typescript: 'TypeScript',
+      json: 'JSON', yaml: 'YAML', yml: 'YAML', go: 'Go', python: 'Python', py: 'Python',
+      sql: 'SQL', xml: 'XML', html: 'HTML', dockerfile: 'Dockerfile', ini: 'Config', text: 'Text',
+    };
+
+    root.querySelectorAll('pre').forEach((pre) => {
+      if (pre.dataset.wrapped) return;
+      pre.dataset.wrapped = '1';
+      const code = pre.querySelector('code');
+      if (code) { try { hljs.highlightElement(code); } catch {} }
+
+      const m = (code?.className || '').match(/language-([\w-]+)/);
+      const lang = m ? (LANG_LABEL[m[1].toLowerCase()] || m[1]) : 'Code';
+
+      const fig = document.createElement('figure');
+      fig.className = 'codeblock';
+      const head = document.createElement('figcaption');
+      head.className = 'cb-head';
+      head.innerHTML = `<span class="cb-dots"><i></i><i></i><i></i></span><span class="cb-lang">${lang}</span>`;
+
+      const copy = document.createElement('button');
+      copy.type = 'button';
+      copy.className = 'cb-copy';
+      copy.textContent = 'Copy';
+      copy.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(code?.innerText || pre.innerText);
+          copy.textContent = '✓ Đã chép';
+          copy.classList.add('ok');
+          setTimeout(() => { copy.textContent = 'Copy'; copy.classList.remove('ok'); }, 1600);
+        } catch {}
+      });
+      head.appendChild(copy);
+
+      pre.parentNode.insertBefore(fig, pre);
+      fig.appendChild(head);
+      fig.appendChild(pre);
     });
   }, [html]);
 
@@ -115,10 +152,13 @@ export default function Reader({ chapter, html, outline }) {
         </header>
 
         {showAa && (
-          <AaPanel prefs={prefs} apply={apply} outline={outline} onJump={() => setShowAa(false)} />
+          <>
+            <div className="aa-scrim" onClick={() => setShowAa(false)} />
+            <AaPanel prefs={prefs} apply={apply} outline={outline} onClose={() => setShowAa(false)} onJump={() => setShowAa(false)} />
+          </>
         )}
 
-        <main className="scroller" onClick={() => showAa && setShowAa(false)}>
+        <main className="scroller">
           <article className="page">
             <div className="ch-eyebrow">{part?.name} — {part?.full}</div>
             <div className="ch-meta">

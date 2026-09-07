@@ -37,6 +37,7 @@ export default function Sidebar({ current, readSet, onNavigate }) {
           <div className="bar"><i style={{ width: readPct + '%' }} /></div>
           <b>{readSet.size}/50</b>
         </div>
+        <Link href="/quiz" className="rail-quiz" onClick={onNavigate}>▸ Luyện đề 510 câu</Link>
       </div>
 
       <nav className="toc">
