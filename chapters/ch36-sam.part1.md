@@ -67,7 +67,7 @@ Globals:
       AllowOrigin: "'*'"
 ```
 
-Quy tắc merge: thuộc tính ở resource **override** Globals; với map (như `Environment.Variables`) thì merge theo key; với danh sách thì resource **thay thế hoàn toàn**, không nối thêm.
+Quy tắc merge: thuộc tính ở resource **override** Globals; với map (như `Environment.Variables`) thì merge theo key; với danh sách thì phần Globals được **thêm vào trước** danh sách của resource, không bị thay thế hoàn toàn.
 
 ### Các resource type SAM cần nhớ
 
@@ -126,7 +126,7 @@ Mỗi `Type` (Api, HttpApi, S3, SQS, SNS, Kinesis, DynamoDB, Schedule, EventBrid
 
 ## 36.4 Policy templates — IAM gọn gàng không cần viết JSON
 
-Mặc định mỗi `AWS::Serverless::Function` được cấp một execution role với `AWSLambdaBasicExecutionRole` (ghi log CloudWatch). Để cấp thêm quyền, thay vì viết IAM policy JSON, SAM cung cấp **policy templates** — các khuôn quyền có sẵn, nhận tham số (thường là tên/ARN resource) và sinh ra least-privilege policy.
+Khi không chỉ định `Role`, mỗi `AWS::Serverless::Function` được SAM tạo một execution role với `AWSLambdaBasicExecutionRole` (ghi log CloudWatch). Để cấp thêm quyền, thay vì viết IAM policy JSON, SAM cung cấp **policy templates** — các khuôn quyền có sẵn, nhận tham số (thường là tên/ARN resource) và sinh ra least-privilege policy.
 
 ```yaml
   OrderFunction:
@@ -155,6 +155,8 @@ Các policy template hay gặp trong đề: `DynamoDBCrudPolicy`, `DynamoDBReadP
 
 > 💡 **Exam Tip:** `Policies` là property của Function. Bạn có thể trộn 3 dạng trong cùng một list: policy template (map có tham số), IAM statement thô (`Statement:`), và managed policy ARN (chuỗi). Nếu đề hỏi "cách least-privilege gọn nhất để function đọc/ghi DynamoDB", đáp án là **DynamoDBCrudPolicy với TableName**, không phải `AmazonDynamoDBFullAccess`.
 
+Nếu khai báo `Role` bằng ARN của role có sẵn, SAM bỏ qua `Policies` của function; phải quản lý quyền trên role đó. Policy templates là mẫu AWS SAM cung cấp, không phải tên YAML tùy ý.
+
 ## 36.5 Vòng đời SAM CLI: init → build → package → deploy
 
 ### sam init
@@ -174,7 +176,7 @@ sam build --use-container      # build TRONG Docker giống môi trường Lambd
 
 ```bash
 sam package \
-  --output-template-packaged.yaml packaged.yaml \
+  --output-template-file packaged.yaml \
   --s3-bucket my-sam-artifacts
 ```
 

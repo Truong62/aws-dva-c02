@@ -1,73 +1,42 @@
-# STYLE GUIDE — Giáo trình AWS Certified Developer Associate (DVA-C02)
+# Quy chuẩn biên tập giáo trình DVA-C02
 
-Tài liệu này là quy chuẩn BẮT BUỘC cho mọi chương trong giáo trình.
+## Người đọc và mục đích
 
-## Đối tượng người đọc
-- Backend developer (Node.js, Golang) đã biết lập trình, mới hoặc đang làm quen AWS.
-- Mục tiêu: thi đậu AWS Certified Developer – Associate (DVA-C02) VÀ làm việc thực tế được trên AWS.
-- Người đọc thích nội dung kỹ thuật SÂU — không viết hời hợt, không liệt kê suông. Mỗi khái niệm phải giải thích cơ chế bên dưới, khi nào dùng, khi nào KHÔNG dùng, và bẫy thường gặp.
+Developer đã biết lập trình nhưng cần hiểu AWS từ khái niệm đến cách giải tình huống. Ưu tiên cơ chế và điều kiện áp dụng. Không kéo dài bài để đạt số từ; không tuyên bố thuộc keyword là đủ đậu thi.
 
-## Ngôn ngữ
-- Viết bằng tiếng Việt. Thuật ngữ kỹ thuật GIỮ NGUYÊN tiếng Anh (ví dụ: "visibility timeout", "eventual consistency", "provisioned concurrency") — giải thích nghĩa bằng tiếng Việt ở lần xuất hiện đầu tiên.
-- Giọng văn: như senior engineer hướng dẫn đồng nghiệp — thẳng, rõ, có ví dụ thực tế, thỉnh thoảng chỉ ra war story / lỗi hay gặp trong production.
-- KHÔNG viết kiểu marketing ("AWS tuyệt vời", "dịch vụ mạnh mẽ"...). Đi thẳng vào kỹ thuật.
+## Nội dung chính và tham khảo
 
-## Cấu trúc file mỗi chương (2 phần, do 2 agent viết)
+- `chapters/essentials/chXX-slug.md` là bài ôn thi hiển thị đầu tiên, ngắn hơn chương gốc và đọc độc lập được.
+- `chapters/chXX-slug.md` là phần chuyên sâu trong Đọc thêm.
+- `.part1.md` và `.part2.md` là bản nguồn cũ. Sửa lỗi bản ghép thì sửa phần tương ứng nếu còn tồn tại.
+- Giữ số chương, slug và URL để không mất liên kết/tiến độ.
 
-### Phần 1 — Lý thuyết (file `chXX-<slug>.part1.md`, ~3200–3800 từ)
-```markdown
-# Chương XX: <Tên chương>
+## Cấu trúc mỗi bài
 
-> **Trọng tâm DVA-C02:** <2-3 câu: chủ đề này chiếm dạng câu hỏi gì trong đề thi>
+1. Một H1: tên chủ đề.
+2. H2 “Khái niệm cần hiểu”: giải nghĩa trước khi dùng thuật ngữ.
+3. Cơ chế và quyết định cần thi: ai gọi ai, dữ liệu đi đâu, quyền nằm đâu, lỗi xử lý ở chặng nào.
+4. Bảng so sánh khi có lựa chọn dễ nhầm, kèm điều kiện và giới hạn.
+5. H2 “Tình huống song ngữ”: có `**EN:**`, `**VI:**` và lựa chọn Anh–Việt. Có đáp án tốt nhất rõ ràng hoặc ghi số đáp án cần chọn.
+6. H3 “Đáp án và giải thích”: vì sao đúng và vì sao phương án gần đúng không đạt yêu cầu. Reader tự gập đáp án.
+7. H2 “Tự kiểm tra”: buộc diễn giải, không chỉ nhắc tên dịch vụ.
+8. Link tài liệu AWS trực tiếp ở đoạn liên quan hoặc cuối bài.
 
-## Mục tiêu chương
-- <4-6 bullet mục tiêu học được>
+Chương 1 và 49–50 có thêm lộ trình/chiến lược. Không dẫn số trang PDF trong bài chính.
 
-## XX.1 <Section lý thuyết đầu tiên>
-...
-## XX.2 ...
-(5–9 section lý thuyết, đi từ cơ bản đến nâng cao)
-```
-- Mỗi section: giải thích cơ chế → ví dụ cụ thể → code/CLI minh hoạ → bẫy/lưu ý.
-- Code ví dụ: ưu tiên **AWS SDK for JavaScript v3 (Node.js)** và **AWS CLI v2**. Thỉnh thoảng nhắc Go SDK v2 nếu phù hợp. Code phải chạy được, có comment tiếng Việt ngắn gọn.
-- Chèn các khối exam tip ngay trong lý thuyết khi gặp điểm thi hay hỏi:
-  `> 💡 **Exam Tip:** ...`
-- Dùng bảng so sánh khi có ≥2 lựa chọn tương tự (ví dụ ALB vs NLB, SQS vs Kinesis).
-- Số liệu limits/quotas quan trọng cho đề thi phải nêu chính xác (ví dụ: Lambda timeout max 15 phút, SQS message size 256KB...).
+## Ngôn ngữ và ví dụ
 
-### Phần 2 — Lab, Quiz & Tổng kết (file `chXX-<slug>.part2.md`, ~1800–2400 từ)
-```markdown
-## Hands-on Lab: <tên lab>
-**Mục tiêu lab:** ...
-**Chuẩn bị:** ...
-### Bước 1: ...
-(các bước chi tiết, lệnh CLI/console cụ thể, có output mong đợi)
-### Dọn dẹp tài nguyên
-(luôn có — tránh tốn tiền)
+Tiếng Việt rõ ràng, giữ thuật ngữ tiếng Anh và giải nghĩa lần đầu. Ví dụ code ngắn, ghi ngôn ngữ code fence. Không thêm comment, docstring, JSDoc hoặc TODO trong code; giải thích bằng văn bản bên ngoài. Không dùng credentials thật.
 
-## 💡 Exam Tips chương XX
-- <8-12 tip cô đọng, đúng kiểu câu hỏi DVA-C02>
+## Độ chính xác
 
-## Quiz chương XX (10 câu)
-**Câu 1.** ...
-- A. ...
-- B. ...
-- C. ...
-- D. ...
-(đủ 10 câu, độ khó tương đương đề thật, có câu tình huống "A developer needs to...")
+- Đối chiếu AWS cho quota, cú pháp và giới hạn hỗ trợ; phân biệt default với adjustable quota/hard limit.
+- Nêu API/service type: REST vs HTTP API, queue DLQ vs async Lambda DLQ, EC2 vs Fargate.
+- Không nói FIFO tự bảo đảm nghiệp vụ exactly-once, mọi 502 là malformed response, mọi rollback fail là drift, hay write-through loại bỏ mọi race condition.
+- Không quy đổi 720 thành 72%. Điểm mock chỉ đo tiến bộ nội bộ.
+- Đề cũ có giả định lỗi thời phải sửa hoặc ghi rõ điều kiện; không yêu cầu học thuộc thông tin sai vì “đề hay hỏi”.
+- Ghi phạm vi rà soát trong `docs/content-review.md`; không tuyên bố đã kiểm chứng toàn bộ bài tập nếu mới kiểm tra bài chính.
 
-### Đáp án & giải thích
-**Câu 1 — Đáp án B.** <giải thích vì sao B đúng VÀ vì sao A/C/D sai>
-...
+## Kiểm chứng
 
-## Tóm tắt chương
-- <8-12 bullet tóm tắt ý chính>
-```
-
-## Quy tắc chống trùng lặp
-- Đọc `MUC-LUC.md` để biết phạm vi chương mình viết và các chương lân cận. KHÔNG viết lấn sang phạm vi chương khác — chỉ nhắc tham chiếu: "(chi tiết ở Chương YY)".
-
-## Định dạng
-- Markdown chuẩn GitHub. Heading cấp 1 chỉ dùng 1 lần (tên chương, ở part1).
-- Code block luôn ghi ngôn ngữ: ```bash, ```javascript, ```json, ```yaml.
-- Không dùng emoji ngoài 💡 cho exam tip.
+Chạy `npm run check:content`, `npm run check`, `npm run build`, `git diff --check`. Kiểm tra trang chủ/chương desktop/mobile, mở đáp án và Đọc thêm, kiểm tra mục lục và link nội bộ. Không thêm dependency nếu renderer hiện có đáp ứng.

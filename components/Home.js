@@ -19,17 +19,17 @@ export default function Home({ meta, totalWords }) {
 
   return (
     <div className="cover">
-      <div className="cover-badge">Giáo trình ôn luyện · Tiếng Việt</div>
+      <div className="cover-badge">Ôn thi DVA-C02 · Hiểu cơ chế, giải tình huống</div>
       <h1>AWS Certified<br />Developer <span className="amp">—</span> Associate</h1>
       <p className="lead">
-        50 chương từ nền tảng hạ tầng tới serverless và CI/CD: lý thuyết sâu, code AWS SDK v3 &amp; CLI,
-        hands-on lab, exam tips và quiz có giải thích — đủ để tự tin bước vào kỳ thi <b>DVA-C02</b>.
+        50 bài ôn thi: khái niệm nền, luồng hoạt động, những điểm dễ nhầm và tình huống Anh–Việt.
+        Mỗi bài có phần đọc thêm để tra cứu lý thuyết chuyên sâu và thực hành.
       </p>
 
       <div className="cover-stats">
-        <div className="cover-stat"><b>50</b><span>chương</span></div>
-        <div className="cover-stat"><b>{(totalWords / 1000).toFixed(0)}k+</b><span>từ nội dung</span></div>
-        <div className="cover-stat"><b>~{totalMin}</b><span>phút đọc</span></div>
+        <div className="cover-stat"><b>50</b><span>bài ôn thi</span></div>
+        <div className="cover-stat"><b>{(totalWords / 1000).toFixed(0)}k</b><span>từ phần ôn thi</span></div>
+        <div className="cover-stat"><b>~{totalMin}</b><span>phút đọc phần chính</span></div>
         <div className="cover-stat"><b>{readSet.size}</b><span>đã học xong</span></div>
       </div>
 
@@ -44,6 +44,12 @@ export default function Home({ meta, totalWords }) {
         <Link className="btn-ghost" href="/quiz">Luyện đề 510 câu →</Link>
         <Link className="btn-ghost" href="/chuong/49">Bộ đề mô phỏng →</Link>
       </div>
+
+      <p className="lead">
+        Học từ nền tảng: <Link href="/chuong/2/">IAM</Link> → <Link href="/chuong/28/">Lambda</Link> →{' '}
+        <Link href="/chuong/34/">API Gateway</Link> → <Link href="/chuong/36/">SAM</Link>.
+        {' '}Xem <Link href="/chuong/1/">lộ trình và phạm vi kỳ thi</Link> trước khi luyện đề.
+      </p>
 
       <div className="shelf">
         {PARTS.map((p) => {

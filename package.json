@@ -7,6 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "check": "node lib/quiz.check.mjs",
+    "check:content": "node lib/content.check.mjs",
     "start": "next start"
   },
   "dependencies": {

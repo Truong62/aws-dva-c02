@@ -1,12 +1,15 @@
 # Giáo trình ôn luyện AWS Certified Developer – Associate (DVA-C02)
 
-Giáo trình tiếng Việt **50 chương** (~365.000 từ), từ cơ bản đến nâng cao: lý thuyết sâu + code AWS SDK JS v3 / CLI v2 + hands-on lab + exam tips + quiz 10 câu mỗi chương + bộ đề mô phỏng 65 câu. Trình đọc dựng bằng **Next.js**, phong cách **máy đọc sách** (e-reader).
+Giáo trình tiếng Việt **50 bài ôn thi**, tập trung khái niệm, cơ chế, lựa chọn theo yêu cầu và tình huống Anh–Việt. Nội dung lý thuyết dài, code, lab và bài tập gốc được giữ trong **Đọc thêm**, đóng mặc định. Trình đọc Next.js giữ giao diện máy đọc sách và URL chương hiện có.
+
+Lộ trình bắt đầu: IAM → Lambda → API Gateway → SAM, sau đó DynamoDB, messaging, deployment, monitoring và security. Thời gian đọc hiển thị chỉ tính phần ôn thi. Phạm vi rà soát và các hiệu chỉnh có nguồn được ghi trong [content review](docs/content-review.md).
 
 ## Cấu trúc
 
 ```
 aws-dva-c02/
-├── chapters/           # Nội dung 50 chương: ch01-*.md → ch50-*.md (+ .part1/.part2 gốc)
+├── chapters/essentials/
+├── chapters/
 ├── app/                # Next.js App Router: trang bìa + /chuong/[num]
 ├── components/         # Reader, Sidebar, AaPanel, Home (client components)
 ├── lib/                # data.js (mục lục), content.js (đọc & render markdown)
@@ -57,4 +60,15 @@ Thư mục `out/` là HTML/CSS/JS tĩnh — markdown được render sẵn lúc 
 - Lịch sử và điểm cao nhất từng phần lưu trong `localStorage`.
 - Phím tắt khi làm bài: `←` `→` chuyển câu, `1`–`9` chọn đáp án.
 
-Dữ liệu câu hỏi nằm ở `public/quiz-questions.json`; logic thuần ở `lib/quiz.mjs`, kiểm tra bằng `npm run check`.
+Dữ liệu câu hỏi nằm ở `public/quiz-questions.json`; logic thuần ở `lib/quiz.mjs`, kiểm tra bằng `npm run check`. Mốc 72% là mốc luyện tập của website, không quy đổi sang điểm AWS 720/1000. Bộ 510 câu gốc chưa được kiểm chứng toàn bộ trong đợt biên tập nội dung chính.
+
+## Kiểm tra nội dung và build
+
+```bash
+npm run check:content
+npm run check
+npm run build
+git diff --check
+```
+
+`check:content` kiểm tra đủ 50 bài, tình huống song ngữ, nguồn AWS, metadata, mục lục/anchors và phần tham khảo đóng mặc định. Build xuất HTML sẵn vào `out/`.

@@ -18,7 +18,7 @@ Bộ đề 65 câu này được chia đúng tỷ lệ trên (≈21 câu Develop
 **Cách tự chấm và quy đổi:**
 1. Làm hết 65 câu trong **130 phút**, KHÔNG xem đáp án giữa chừng. Bấm giờ thật — quản lý thời gian là một kỹ năng phải luyện.
 2. Đánh dấu (flag) các câu bạn đoán hoặc phân vân; sau khi làm xong mới đối chiếu.
-3. Đếm số câu đúng. Quy đổi tương đối: thang 720/1000 tương đương khoảng **72% câu đúng**, tức cần đúng **≥ 47/65 câu**. Nếu bạn đúng 47–52 câu: ở ngưỡng pass mong manh, cần ôn thêm. Đúng ≥ 55 câu: an toàn để đăng ký thi.
+3. Đếm tỷ lệ câu đúng để theo dõi tiến bộ và phân loại lỗi. **Không quy đổi tỷ lệ đúng thành điểm AWS 720/1000**; kết quả bộ luyện tập không bảo đảm đậu kỳ thi thật.
 4. Với MỌI câu sai, hãy đọc kỹ phần "vì sao từng phương án còn lại sai" và nhảy về đúng chương được tham chiếu để ôn lại cơ chế — đừng chỉ học thuộc đáp án.
 
 > 💡 **Exam Tip:** Trong đề thật, mỗi câu thường có 2 đáp án "gần đúng". Từ khóa định hướng như *least operational overhead*, *most cost-effective*, *near real-time*, *without modifying application code* chính là chìa khóa chọn giữa 2 đáp án đó. Luyện nhận diện từ khóa song song với luyện kiến thức.
@@ -89,13 +89,13 @@ Một ứng dụng đẩy message vào một Amazon SQS standard queue. Consumer
 - A. SQS standard queue không đảm bảo ordering nên message bị nhân đôi.
 - B. Visibility timeout đang nhỏ hơn thời gian xử lý message.
 - C. Long polling chưa được bật trên queue.
-- D. Message size vượt quá 256 KB.
+- D. Message size vượt quá 1 MiB.
 
 **Đáp án: B.** Khi một consumer nhận message, SQS đặt message vào trạng thái "invisible" trong khoảng *visibility timeout* (mặc định 30 giây). Nếu xử lý mất 2 phút nhưng visibility timeout chỉ 30 giây, message sẽ trở lại visible trước khi consumer đầu tiên xử lý xong và xóa nó — consumer thứ hai nhặt được và xử lý lại. Khắc phục: tăng visibility timeout lên lớn hơn thời gian xử lý (hoặc gọi `ChangeMessageVisibility` để gia hạn).
 
 - A sai vì standard queue có cơ chế at-least-once và đôi khi duplicate, nhưng đó không phải nguyên nhân của duplicate *có hệ thống* khi processing time > visibility timeout; mô tả "thỉnh thoảng bị xử lý 2 lần đúng khi xử lý lâu" chỉ thẳng vào visibility timeout.
 - C sai vì long polling chỉ giảm số empty response và chi phí API, không liên quan tới duplicate processing.
-- D sai vì message > 256 KB sẽ bị từ chối khi gửi, không gây xử lý lặp.
+- D sai vì message > 1 MiB sẽ bị từ chối khi gửi, không gây xử lý lặp.
 
 (Ôn lại: Chương 21)
 

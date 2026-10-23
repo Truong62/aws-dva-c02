@@ -3,7 +3,7 @@ import './globals.css';
 export const metadata = {
   title: 'AWS DVA-C02 — Giáo trình ôn luyện Developer Associate',
   description:
-    'Giáo trình tiếng Việt 50 chương ôn thi AWS Certified Developer Associate (DVA-C02): lý thuyết sâu, lab, exam tips và quiz.',
+    '50 bài ôn thi AWS DVA-C02: khái niệm cốt lõi, cơ chế, tình huống Anh–Việt, điểm dễ nhầm và tài liệu thực hành.',
 };
 
 export const viewport = {

@@ -570,14 +570,14 @@ Gợi ý chi tiết theo domain (dùng để truy ngược chương khi sai):
 
 ## Hướng dẫn tự chấm & đọc kết quả
 
-Đề thật DVA-C02 có 65 câu nhưng chỉ **50 câu được tính điểm** (15 câu là câu thử nghiệm/unscored, bạn không biết câu nào), thang điểm scaled **100–1000**, **pass = 720**. Vì bộ đề này không phân biệt câu unscored, hãy quy đổi theo số câu đúng trên tổng 65.
+Đề thật DVA-C02 có 65 câu nhưng chỉ **50 câu được tính điểm** (15 câu là câu thử nghiệm/unscored, bạn không biết câu nào), thang điểm scaled **100–1000**, **pass = 720**. Bộ đề luyện tập dùng tỷ lệ đúng trên tổng 65 để theo dõi tiến bộ, không quy đổi sang scaled score của AWS.
 
 Cách tính: đếm số câu trả lời đúng (X) trên 65, lấy tỉ lệ phần trăm `X/65 × 100%`.
 
 | Số câu đúng / 65 | Tỉ lệ | Mức độ sẵn sàng | Hành động đề xuất |
 |---|---|---|---|
-| 56–65 | ≥ 86% | Rất sẵn sàng | Đặt lịch thi. Chỉ ôn lướt các câu sai và đọc Chương 50 (chiến lược làm bài). |
-| 49–55 | 75–85% | Đủ ngưỡng đậu, nhưng mỏng | Có thể thi sau 1 tuần. Ôn kỹ 2 domain yếu nhất theo bảng trên trước khi thi. |
+| 56–65 | ≥ 86% | Kết quả luyện tập cao | Kiểm tra thêm bằng đề chưa từng làm và giải thích các câu đã đoán. Ôn các câu sai và đọc Chương 50 (chiến lược làm bài). |
+| 49–55 | 75–85% | Còn lỗi cần phân tích | Chưa thể suy ra điểm thi thật. Ôn kỹ 2 domain yếu nhất theo bảng trên trước khi thi. |
 | 42–48 | 65–74% | Cận biên, rủi ro trượt | Chưa nên thi. Ôn lại toàn bộ các chương của domain bạn sai nhiều nhất, làm lại đề sau 1–2 tuần. |
 | 33–41 | 51–64% | Chưa sẵn sàng | Quay lại học lý thuyết các phần yếu (đặc biệt Serverless và Security — chiếm nhiều điểm), làm hands-on lab từng chương. |
 | ≤ 32 | < 51% | Cần học lại nền tảng | Ôn tuần tự từ đầu giáo trình; ưu tiên Lambda, DynamoDB, IAM, API Gateway, CI/CD. |

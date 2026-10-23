@@ -83,12 +83,12 @@ Cơ chế flag ("Mark for Review") có trong cả giao diện Pearson VUE và PS
 Tìm đáp án mô tả điều mà dịch vụ AWS *không làm được*. Đây là loại dễ gạch nhất nếu bạn nắm chắc giới hạn dịch vụ.
 
 > **Ví dụ:** *Một developer cần lưu file 500 MB như payload cho mỗi message gửi vào hàng đợi để Lambda xử lý. Giải pháp nào phù hợp?*
-> - A. Gửi thẳng file 500 MB vào SQS message — *loại ngay*: SQS giới hạn message **256 KB**, không thể.
-> - B. Gửi thẳng 500 MB vào SNS rồi fan-out — *loại*: SNS cũng giới hạn 256 KB.
+> - A. Gửi thẳng file 500 MB vào SQS message — *loại ngay*: SQS giới hạn message **1 MiB**, không thể.
+> - B. Gửi thẳng 500 MB vào SNS rồi fan-out — *loại*: SNS mặc định 256 KiB; cấu hình mở rộng hỗ trợ tới 1 MiB với loại subscriber phù hợp, vẫn không chứa được file 500 MB.
 > - C. Upload file lên S3, gửi S3 object key (qua SQS Extended Client) vào SQS, Lambda đọc lại từ S3 — *đúng*.
 > - D. Encode base64 file rồi nhét vào DynamoDB item — *loại*: DynamoDB item tối đa **400 KB**.
 
-Chỉ cần nhớ 3 con số (SQS/SNS 256 KB, DynamoDB item 400 KB) là gạch được A, B, D mà không cần nghĩ thêm. Đây là lý do Chương các dịch vụ luôn nhấn mạnh limits — chúng là "dao mổ" loại đáp án.
+Đối chiếu giới hạn theo dịch vụ và cấu hình: SQS 1 MiB, SNS tối đa 1 MiB khi bật mở rộng phù hợp, DynamoDB item 400 KB. File 500 MB đều vượt các mức này. Đây là lý do Chương các dịch vụ luôn nhấn mạnh limits — chúng là "dao mổ" loại đáp án.
 
 ### Kỹ thuật 2 — Loại đáp án vi phạm best practice rõ ràng
 

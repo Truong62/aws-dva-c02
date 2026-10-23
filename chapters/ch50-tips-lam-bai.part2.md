@@ -149,7 +149,7 @@
 - [ ] DynamoDB ProvisionedThroughputExceeded, hot partition, adaptive capacity (Ch31).
 - [ ] Kinesis ProvisionedThroughputExceeded, hot shard, resharding (Ch23).
 - [ ] Caching để tối ưu chi phí/latency: DAX, ElastiCache, API GW cache, CloudFront (Ch9, Ch15, Ch33, Ch35).
-- [ ] X-Forwarded-For, 502/504 ở ALB/API GW (integration timeout 29s) (Ch6, Ch34).
+- [ ] X-Forwarded-For, 502/504 ở ALB/API GW (integration timeout tùy loại API và cấu hình) (Ch6, Ch34).
 
 ## Lộ trình ôn 4 tuần và 8 tuần
 
@@ -216,9 +216,9 @@ Quy tắc chung cho cả hai lộ trình: duy trì một "sổ lỗi" — mỗi 
 - C. Lưu trong env var Lambda
 - D. KMS GenerateDataKey
 
-**Câu 7.** API Gateway REST API trả lỗi `504` khi tích hợp một backend HTTP chạy lâu. Nguyên nhân giới hạn nào?
+**Câu 7.** API Gateway REST API giữ integration timeout mặc định 29 giây và trả `504` khi backend HTTP chạy 40 giây. Nguyên nhân nào phù hợp?
 - A. Lambda timeout 15 phút
-- B. Integration timeout tối đa 29 giây
+- B. Backend vượt integration timeout đang cấu hình 29 giây
 - C. Throttling 10000 rps
 - D. Payload 10MB
 
@@ -254,7 +254,7 @@ Quy tắc chung cho cả hai lộ trình: duy trì một "sổ lỗi" — mỗi 
 
 **Câu 6 — B.** Secrets Manager hỗ trợ managed rotation cho RDS gần như zero-code → ít vận hành nhất. Parameter Store không có automatic rotation. Env var Lambda không rotate và lộ secret. KMS GenerateDataKey là API mã hoá, không liên quan rotation credential.
 
-**Câu 7 — B.** API Gateway có integration timeout tối đa **29 giây**; backend chạy lâu hơn → `504 Gateway Timeout`. Lambda timeout 15 phút không cứu được vì API GW đã cắt ở 29s. Throttling trả 429, payload limit trả 413/400 — không phải 504.
+**Câu 7 — B.** Backend vượt integration timeout **đang cấu hình 29 giây** nên API Gateway trả 504. Regional/private REST API có thể xin tăng quota phù hợp; đây không phải trần bất biến cho mọi API. Lambda timeout không tự thay đổi integration timeout. Throttling trả 429, payload limit trả 413/400 — không phải 504.
 
 **Câu 8 — C.** Signed cookies cấp quyền cho **nhiều object** mà giữ nguyên URL → hợp video nhiều segment. Signed URL chỉ cho một file. S3 presigned URL truy cập trực tiếp S3, không qua CDN. Public bucket mất kiểm soát truy cập.
 
@@ -282,5 +282,5 @@ Lời khuyên thực tế: chứng chỉ có hiệu lực **3 năm**. Quan trọ
 - **Checklist theo domain** giúp tự đánh giá độ phủ: Development 32%, Security 26%, Deployment 24%, Troubleshooting 18% — phân bổ thời gian ôn theo trọng số này.
 - **Lộ trình 4 tuần** cho người có nền và cần nước rút; **8 tuần** cho người muốn chắc chắn. Cả hai bám đúng 50 chương và đều dành tuần cuối cho bộ đề Ch49 + sổ lỗi.
 - Quy tắc bất biến: duy trì "sổ lỗi" và đạt ≥80% trên đề mô phỏng trước khi đăng ký thi thật.
-- Một số limit hay bị hỏi tổng hợp lại: API Gateway integration timeout 29s, Lambda timeout 15 phút / memory 10GB / 1000 concurrency mặc định, KMS direct encrypt 4KB, SQS message 256KB, S3 multipart bắt buộc >5GB.
+- Một số limit hay bị hỏi tổng hợp lại: API Gateway timeout tùy loại API/quota (REST mặc định 29s), Lambda timeout 15 phút / memory 10GB / 1000 concurrency mặc định, KMS direct encrypt 4KB, SQS message 1 MiB, S3 multipart bắt buộc >5GB.
 - Sau khi đậu: hướng tự nhiên là SAA-C03 (chồng lấn nhiều) rồi DOP-C02; quan trọng hơn cả là build một dự án serverless thật để chứng minh năng lực.

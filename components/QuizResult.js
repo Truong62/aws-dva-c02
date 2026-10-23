@@ -22,11 +22,11 @@ export default function QuizResult({ session, onRetryWrong, onRetryAll, onExit }
 
       <div className="scroller">
         <div className="page quiz-page">
-          <div className="ch-eyebrow">{passed ? 'Đạt' : 'Chưa đạt'}</div>
+          <div className="ch-eyebrow">{passed ? 'Đạt mốc luyện tập' : 'Chưa đạt mốc luyện tập'}</div>
           <div className="quiz-score">
             <div className="qs-num" data-pass={passed}>{percent}<i>%</i></div>
             <div className="qs-info">
-              <p>Ngưỡng đạt là {PASS_PERCENT}%.</p>
+              <p>Mốc luyện tập của website: {PASS_PERCENT}%. Đây không phải phép quy đổi sang điểm AWS 720/1000.</p>
               <div className="qs-stats">
                 <span><b>{correct}/{total}</b>câu đúng</span>
                 <span><b>{wrong.length}</b>câu sai</span>

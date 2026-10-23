@@ -182,7 +182,7 @@ Bẫy hay gặp: account-level 10.000 rps là **dùng chung** cho tất cả API
 
 Burst vs rate hay nhầm: với rate=100, burst=200, client có thể gửi một "đợt" tối đa 200 request gần như tức thời (xài hết bucket), nhưng tốc độ nạp lại bucket là 100 token/giây. Gửi liên tục >100 rps sẽ dần cạn bucket và bị 429. Đây là lý do một spike ngắn vẫn qua được dù rate thấp.
 
-> 💡 **Exam Tip:** Phân biệt 429 (throttling/quota — do API Gateway, client cần backoff) với 504 Integration Timeout (backend chậm, REST API max integration timeout 29 giây — không nâng được cao hơn). Đề rất hay gài 504: Lambda chạy 40 giây → API Gateway vẫn cắt ở 29 giây. Lưu ý cập nhật: integration timeout của REST API có thể nâng quá 29 giây qua quota request riêng, nhưng mặc định và mức đề thi vẫn nhớ là 29 giây.
+> 💡 **Exam Tip:** 429 gợi ý throttling/quota; 504 gợi ý backend vượt integration timeout đang cấu hình. Regional và private REST API có thể xin nâng timeout vượt 29 giây; không áp dụng kết luận đó cho mọi loại API. Lambda timeout dài hơn không tự tăng timeout của Gateway.
 
 ## 35.6 Caching ở stage level
 

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import hljs from 'highlight.js/lib/common';
@@ -15,6 +15,7 @@ export default function Reader({ chapter, html, outline }) {
   const [showAa, setShowAa] = useState(false);
   const [progress, setProgress] = useState(0);
   const bodyRef = useRef(null);
+  const contentMarkup = useMemo(() => ({ __html: html }), [html]);
 
   const idx = CHAPTERS.findIndex((c) => c.num === chapter.num);
   const prev = CHAPTERS[idx - 1];
@@ -162,15 +163,15 @@ export default function Reader({ chapter, html, outline }) {
           <article className="page">
             <div className="ch-eyebrow">{part?.name} — {part?.full}</div>
             <div className="ch-meta">
-              <span>⏱ ~{chapter.minutes} phút đọc</span>
-              <span>✍ {chapter.words.toLocaleString('vi-VN')} từ</span>
+              <span>⏱ ~{chapter.minutes} phút ôn phần chính</span>
+              <span>✍ {chapter.words.toLocaleString('vi-VN')} từ ôn thi</span>
               <span>📑 Chương {chapter.num}/50</span>
             </div>
 
             <div
               ref={bodyRef}
               className={`prose${prefs.justify ? ' justify' : ''}`}
-              dangerouslySetInnerHTML={{ __html: html }}
+              dangerouslySetInnerHTML={contentMarkup}
             />
 
             <div className="ch-foot">

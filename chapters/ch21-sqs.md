@@ -1,6 +1,6 @@
 # Chương 21: Amazon SQS
 
-> **Trọng tâm DVA-C02:** SQS là dịch vụ messaging xuất hiện dày đặc trong đề thi, thường ở dạng câu hỏi tình huống. Bạn sẽ gặp: chọn Standard vs FIFO queue (ordering, deduplication); tính và chỉnh `visibility timeout` để tránh xử lý trùng hoặc "message biến mất"; phân biệt long polling vs short polling để giảm chi phí và độ trễ; cấu hình Dead Letter Queue với `maxReceiveCount`; dùng `DelaySeconds` (delay queue) vs message timer; bẫy 256KB message size và khi nào cần Extended Client Library (S3); scale Auto Scaling Group theo `ApproximateNumberOfMessagesVisible` bằng backlog-per-instance; và access policy cho phép SNS/S3 gửi message vào queue. SNS (fan-out) học ở Chương 22, Kinesis ở Chương 23.
+> **Trọng tâm DVA-C02:** SQS là dịch vụ messaging xuất hiện dày đặc trong đề thi, thường ở dạng câu hỏi tình huống. Bạn sẽ gặp: chọn Standard vs FIFO queue (ordering, deduplication); tính và chỉnh `visibility timeout` để tránh xử lý trùng hoặc "message biến mất"; phân biệt long polling vs short polling để giảm chi phí và độ trễ; cấu hình Dead Letter Queue với `maxReceiveCount`; dùng `DelaySeconds` (delay queue) vs message timer; bẫy 1 MiB message size và khi nào cần Extended Client Library (S3); scale Auto Scaling Group theo `ApproximateNumberOfMessagesVisible` bằng backlog-per-instance; và access policy cho phép SNS/S3 gửi message vào queue. SNS (fan-out) học ở Chương 22, Kinesis ở Chương 23.
 
 ## Mục tiêu chương
 
@@ -8,7 +8,7 @@
 - Phân biệt rạch ròi Standard queue (at-least-once, best-effort ordering, throughput không giới hạn) và FIFO queue (exactly-once processing, ordering theo message group).
 - Nắm chính xác cơ chế `visibility timeout`, `ReceiveMessage`/`DeleteMessage`/`ChangeMessageVisibility` — gốc rễ của hầu hết lỗi production với SQS.
 - Cấu hình long polling, Dead Letter Queue, delay queue, message timer, và hiểu các limits/quotas con số cụ thể cho đề thi.
-- Xử lý message lớn hơn 256KB bằng Extended Client Library + S3, và viết producer/consumer bằng AWS SDK for JavaScript v3 + AWS CLI v2.
+- Xử lý message lớn hơn 1 MiB bằng Extended Client Library + S3, và viết producer/consumer bằng AWS SDK for JavaScript v3 + AWS CLI v2.
 - Thiết kế scaling cho consumer (ASG theo queue depth) và viết access policy / mã hoá SSE đúng chuẩn.
 
 ## 21.1 Vì sao decouple — và SQS giải quyết bài toán gì
@@ -58,7 +58,7 @@ const out = await client.send(new SendMessageCommand({
 console.log(out.MessageId, out.MD5OfMessageBody); // SQS trả MessageId + MD5 để verify
 ```
 
-Để tăng throughput và giảm chi phí, gửi theo lô bằng `SendMessageBatch` — tối đa **10 message/batch** và tổng payload cả batch không quá 256KB:
+Để tăng throughput và giảm chi phí, gửi theo lô bằng `SendMessageBatch` — tối đa **10 message/batch** và tổng payload cả batch không quá 1 MiB:
 
 ```javascript
 import { SendMessageBatchCommand } from "@aws-sdk/client-sqs";
@@ -230,18 +230,18 @@ Phân biệt với **visibility timeout** — một bẫy hay gài:
 
 > 💡 **Exam Tip:** "Trì hoãn việc xử lý message vài phút sau khi đưa vào queue" → **delay queue / message timer** (`DelaySeconds`, max 15 phút). "Ẩn message khi đang được xử lý" → **visibility timeout** (max 12 giờ). FIFO queue **không** hỗ trợ per-message timer (chỉ delay mức queue).
 
-## 21.7 Message size 256KB & Extended Client Library
+## 21.7 Message size 1 MiB & Extended Client Library
 
-Một message SQS tối đa **256 KB** (262144 bytes), tính cả **body lẫn message attributes**. Đây là hard limit hay được hỏi.
+Một message SQS tối đa **1 MiB** (1.048.576 bytes), tính cả **body lẫn message attributes**. Đây là hard limit hay được hỏi.
 
-Khi cần gửi payload lớn hơn 256KB (ví dụ ảnh, file, log dump), có hai cách:
+Khi cần gửi payload lớn hơn 1 MiB (ví dụ ảnh, file, log dump), có hai cách:
 
 1. Tách logic: lưu payload lớn vào **S3**, chỉ gửi pointer (S3 key) qua SQS. Consumer đọc S3 từ pointer. Tự code thủ công.
 2. Dùng **Amazon SQS Extended Client Library** (có cho Java và một số ngôn ngữ): thư viện tự động lưu payload lớn vào S3 và gửi metadata reference qua SQS, consumer tự lấy lại từ S3 một cách trong suốt. Hỗ trợ payload tới **2 GB**.
 
 Cơ chế Extended Client Library bên dưới: khi gửi, nếu payload vượt ngưỡng, nó PUT object lên S3 bucket bạn chỉ định và gửi một message nhỏ chứa con trỏ tới object đó; khi nhận, nó GET object từ S3 và trả về cho bạn nội dung gốc; khi `DeleteMessage`, nó cũng xoá object S3 tương ứng.
 
-> 💡 **Exam Tip:** "Gửi message > 256KB qua SQS" → **SQS Extended Client Library + S3** (lưu payload S3, gửi reference). Con số **256KB** cho max message size và **2GB** với Extended Client là hai số hay xuất hiện. Đừng chọn "chia nhỏ message" — đáp án chuẩn là S3 offload.
+> 💡 **Exam Tip:** "Gửi message > 1 MiB qua SQS" → **SQS Extended Client Library + S3** (lưu payload S3, gửi reference). Payload SQS hiện hỗ trợ tới **1 MiB**; nếu vượt giới hạn, lưu S3 rồi gửi tham chiếu là pattern thường dùng. Đánh giá các lựa chọn theo kích thước và yêu cầu thực tế, không coi offload là bắt buộc khi payload còn vừa queue.
 
 ## 21.8 FIFO queue — ordering, deduplication, message group
 
@@ -329,7 +329,7 @@ aws sqs set-queue-attributes --queue-url $QUEUE_URL --attributes \
 
 **Temporary queues.** Cho pattern request-response (mỗi request cần một queue trả lời tạm thời, ví dụ RPC qua SQS), AWS cung cấp **Temporary Queue Client** dùng kỹ thuật **virtual queue** — nhiều hàng đợi ảo dùng chung một queue vật lý host queue, tránh tạo/xoá hàng loạt queue thật (vốn chậm và có quota). Phù hợp khi cần nhiều reply queue ngắn hạn với chi phí thấp.
 
-> 💡 **Exam Tip:** Để SNS/S3/EventBridge gửi được vào SQS, bạn cấu hình **resource-based policy trên queue** (không phải IAM role của dịch vụ nguồn), kèm condition `aws:SourceArn`. Mã hoá at rest mặc định/miễn phí → **SSE-SQS**; cần kiểm soát key & audit → **SSE-KMS**. Nhớ giới hạn: **256KB** message, retention max **14 ngày**, delay max **15 phút**, visibility timeout max **12 giờ**, long polling max **20 giây**.
+> 💡 **Exam Tip:** Để SNS/S3/EventBridge gửi được vào SQS, bạn cấu hình **resource-based policy trên queue** (không phải IAM role của dịch vụ nguồn), kèm condition `aws:SourceArn`. Mã hoá at rest mặc định/miễn phí → **SSE-SQS**; cần kiểm soát key & audit → **SSE-KMS**. Nhớ giới hạn: **1 MiB** message, retention max **14 ngày**, delay max **15 phút**, visibility timeout max **12 giờ**, long polling max **20 giây**.
 
 ---
 
@@ -393,7 +393,7 @@ aws sqs get-queue-attributes --queue-url "$Q_URL" \
 
 ### Bước 2: Gửi message và quan sát long polling
 
-Gửi vài message. Với standard queue, `MessageBody` tối đa 256 KB; có thể đính kèm `MessageAttributes` (metadata không nằm trong body):
+Gửi vài message. Với standard queue, `MessageBody` tối đa 1 MiB; có thể đính kèm `MessageAttributes` (metadata không nằm trong body):
 
 ```bash
 aws sqs send-message --queue-url "$Q_URL" \
@@ -408,7 +408,7 @@ aws sqs send-message-batch --queue-url "$Q_URL" --entries '[
 ]'
 ```
 
-`send-message-batch` gửi tối đa 10 message/call, tổng payload ≤ 256 KB. Nhận message với long polling (`--wait-time-seconds 10`): nếu queue trống call sẽ chờ tối đa 10 giây thay vì trả về rỗng ngay — giảm số empty receive và tiết kiệm tiền:
+`send-message-batch` gửi tối đa 10 message/call, tổng payload ≤ 1 MiB. Nhận message với long polling (`--wait-time-seconds 10`): nếu queue trống call sẽ chờ tối đa 10 giây thay vì trả về rỗng ngay — giảm số empty receive và tiết kiệm tiền:
 
 ```bash
 aws sqs receive-message --queue-url "$Q_URL" \
@@ -548,7 +548,7 @@ aws sqs delete-queue --queue-url "$FIFO_URL"
 - **Visibility timeout mặc định 30 giây, max 12 giờ.** Nếu consumer xử lý lâu hơn timeout → message tái xuất hiện và bị xử lý 2 lần (duplicate). Khắc phục: tăng visibility timeout HOẶC gọi `ChangeMessageVisibility` định kỳ (heartbeat). Đáp án "tăng retention period" để fix duplicate là bẫy SAI.
 - **Long polling (`ReceiveMessageWaitTimeSeconds` 1–20 giây) gần như luôn là đáp án đúng** khi câu hỏi nói "giảm số empty receive / giảm chi phí API / giảm latency rỗng". Short polling (giá trị 0) lấy mẫu một tập subset server nên có thể trả rỗng dù queue có message.
 - **DLQ + `maxReceiveCount`:** message vào DLQ sau khi bị nhận quá `maxReceiveCount` lần mà không bị xoá — KHÔNG phải khi consumer "báo lỗi". DLQ của standard queue phải là standard; DLQ của FIFO phải là FIFO.
-- **Message size tối đa 256 KB.** Payload lớn hơn → dùng SQS Extended Client Library: body thật lưu ở S3, message chỉ chứa con trỏ S3. Đây là đáp án kinh điển cho "gửi payload 1 MB qua SQS".
+- **Message size tối đa 1 MiB.** Payload lớn hơn → dùng SQS Extended Client Library: body thật lưu ở S3, message chỉ chứa con trỏ S3. Đây là đáp án kinh điển cho "gửi payload 2 MiB qua SQS".
 - **FIFO: ordering theo `MessageGroupId`**, dedup theo `MessageDeduplicationId` trong cửa sổ 5 phút. `ContentBasedDeduplication` tự hash body. Throughput FIFO mặc định 300 msg/s (3.000 với batch); high-throughput mode lên tới 70.000+ msg/s.
 - **Standard vs FIFO:** standard = at-least-once + best-effort ordering + throughput gần như không giới hạn. FIFO = exactly-once processing + ordering chặt nhưng throughput giới hạn. Chọn FIFO chỉ khi thật sự cần thứ tự / chống trùng.
 - **Delay queue vs message timer:** delay queue áp cho MỌI message (set `DelaySeconds` ở queue level), message timer áp cho TỪNG message khi gửi. Cả hai max 900 giây (15 phút).
@@ -572,8 +572,8 @@ aws sqs delete-queue --queue-url "$FIFO_URL"
 - C. Tăng `MaxNumberOfMessages` lên 100
 - D. Giảm visibility timeout về 0
 
-**Câu 3.** Hệ thống cần gửi message JSON kích thước 800 KB qua SQS. Giải pháp đúng?
-- A. Nén message xuống dưới 256 KB là bắt buộc, không có cách khác
+**Câu 3.** Hệ thống cần gửi message JSON kích thước 2 MiB qua SQS. Giải pháp đúng?
+- A. Nén message xuống dưới 1 MiB là bắt buộc, không có cách khác
 - B. Dùng SQS Extended Client Library: lưu payload ở S3, message chứa con trỏ
 - C. Chia thành 4 message rồi tự ghép lại ở consumer
 - D. Dùng FIFO queue vì FIFO cho phép message tới 2 MB
@@ -626,7 +626,7 @@ aws sqs delete-queue --queue-url "$FIFO_URL"
 
 **Câu 2 — Đáp án A.** Long polling (wait time 1–20s, ở đây 20) khiến SQS chờ tới khi có message hoặc hết thời gian, giảm empty receive và chi phí. B (=0) là short polling — đúng cái gây ra empty response. C tăng số message/call nhưng vẫn short polling nếu wait time 0. D set visibility 0 gây xử lý trùng, không liên quan chi phí poll.
 
-**Câu 3 — Đáp án B.** Giới hạn cứng 256 KB; payload lớn dùng Extended Client Library lưu body ở S3, message chỉ giữ con trỏ — consumer tự fetch từ S3. A sai vì có giải pháp. C tự ghép thủ công mất ordering/độ phức tạp và không phải pattern AWS khuyến nghị. D sai: FIFO cũng giới hạn 256 KB, không có chuyện 2 MB.
+**Câu 3 — Đáp án B.** Giới hạn cứng 1 MiB; payload lớn dùng Extended Client Library lưu body ở S3, message chỉ giữ con trỏ — consumer tự fetch từ S3. A sai vì có giải pháp. C tự ghép thủ công mất ordering/độ phức tạp và không phải pattern AWS khuyến nghị. D sai: FIFO cũng giới hạn 1 MiB, không có chuyện 2 MB.
 
 **Câu 4 — Đáp án C.** Redrive policy + DLQ với `maxReceiveCount` tự chuyển message lỗi sang DLQ sau số lần nhận vượt ngưỡng, gỡ tắc consumer và giữ message để điều tra. A (delay) chỉ trì hoãn, message vẫn quay lại. B (visibility 12h) chỉ giấu lâu hơn rồi vẫn lặp. D (dedup) là tính năng FIFO chống trùng khi gửi, không liên quan message lỗi.
 
@@ -649,7 +649,7 @@ aws sqs delete-queue --queue-url "$FIFO_URL"
 - **Visibility timeout** (mặc định 30s, max 12h) ẩn message sau khi nhận; xử lý lâu hơn timeout gây xử lý trùng — fix bằng tăng timeout hoặc `ChangeMessageVisibility` heartbeat. Luôn xoá message bằng `ReceiptHandle` mới nhất.
 - **Long polling** (`ReceiveMessageWaitTimeSeconds` 1–20s) giảm empty receive và chi phí so với short polling (=0); gần như luôn là đáp án đúng khi đề nói tối ưu poll.
 - **DLQ + redrive policy** (`maxReceiveCount`) tự cô lập message lỗi sau số lần nhận vượt ngưỡng; redrive ngược về source bằng `start-message-move-task`. DLQ phải cùng loại (standard/FIFO) với queue gốc.
-- **Message size tối đa 256 KB**; payload lớn hơn dùng SQS Extended Client Library (body ở S3, message chứa con trỏ).
+- **Message size tối đa 1 MiB**; payload lớn hơn dùng SQS Extended Client Library (body ở S3, message chứa con trỏ).
 - **Delay queue** (cấp queue) vs **message timer** (cấp từng message): cả hai max 900 giây.
 - **Retention period** 1 phút–14 ngày (mặc định 4 ngày); tăng retention KHÔNG sửa lỗi xử lý.
 - **FIFO dedup** theo `MessageDeduplicationId` trong cửa sổ 5 phút; `ContentBasedDeduplication` tự hash body. Ordering chỉ trong cùng message group.

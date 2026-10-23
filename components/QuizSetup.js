@@ -6,7 +6,7 @@ import { PASS_PERCENT, formatClock } from '@/lib/quiz.mjs';
 const STEPS = ['Chọn đề', 'Vào làm bài'];
 const MODE_NOTE = {
   practice: 'Luyện tập — hiện đáp án và giải thích ngay khi chọn xong mỗi câu.',
-  exam: `Thi thử — giấu đáp án tới lúc nộp bài, cần ${PASS_PERCENT}% để đạt.`,
+  exam: `Thi thử — giấu đáp án tới lúc nộp bài. Mốc luyện tập ${PASS_PERCENT}% không tương đương điểm thi AWS.`,
 };
 
 const examLabel = (name) =>
